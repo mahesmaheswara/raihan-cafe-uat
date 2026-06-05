@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Demo Sistem — Raihan coffee Management System</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --cream:#f8f6f2;
+  --white:#ffffff;
+  --dark:#16120f;
+  --dark-2:#2e2a26;
+  --mid:#6b655e;
+  --muted:#a09a92;
+  --border:#e3ddd6;
+  --border-light:#ede8e2;
+  --green:#15803d;
+  --green-bg:#f0fdf4;
+  --green-border:#bbf7d0;
+  --amber:#92400e;
+  --amber-bg:#fffbeb;
+  --amber-border:#fde68a;
+  --radius:10px;
+  --radius-lg:16px;
+  --radius-xl:24px;
+}
+html{scroll-behavior:smooth}
+body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--dark);line-height:1.65;font-size:16px;-webkit-font-smoothing:antialiased}
+
+/* PROGRESS */
+.progress{position:fixed;top:0;left:0;height:2px;background:var(--green);z-index:200;transition:width .08s linear;pointer-events:none}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(248,246,242,0.92);backdrop-filter:blur(24px);border-bottom:1px solid var(--border)}
+.nav-inner{max-width:1080px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:56px;padding:0 2rem}
+.nav-brand{display:flex;align-items:center;gap:10px}
+.nav-brand-dot{width:8px;height:8px;border-radius:50%;background:var(--green)}
+.nav-brand-text{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;letter-spacing:0.5px;text-transform:uppercase;color:var(--dark)}
+.nav-right{display:flex;align-items:center;gap:20px}
+.nav-label{font-size:12px;color:var(--muted);letter-spacing:0.3px}
+.nav-cta{display:inline-flex;align-items:center;gap:6px;background:var(--dark);color:#fff;padding:8px 18px;border-radius:100px;font-size:13px;font-weight:500;text-decoration:none;letter-spacing:0.2px;transition:background .2s}
+.nav-cta:hover{background:var(--dark-2)}
+.nav-cta i{font-size:13px}
+
+/* SIDE DOTS */
+.side-nav{position:fixed;right:20px;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:6px;z-index:50}
+.side-dot{width:5px;height:5px;border-radius:50%;background:var(--border);border:none;cursor:pointer;padding:0;transition:all .25s}
+.side-dot.active{background:var(--green);height:16px;border-radius:3px}
+@media(max-width:900px){.side-nav,.nav-label{display:none}}
+
+/* HERO */
+.hero{padding:120px 2rem 80px;max-width:1080px;margin:0 auto}
+.hero-eyebrow{display:flex;align-items:center;gap:8px;margin-bottom:28px}
+.hero-eyebrow-line{width:32px;height:1px;background:var(--green)}
+.hero-eyebrow-text{font-size:12px;font-weight:500;letter-spacing:2px;text-transform:uppercase;color:var(--green)}
+.hero h1{font-family:'Syne',sans-serif;font-size:clamp(36px,5.5vw,64px);font-weight:800;line-height:1.05;letter-spacing:-2px;margin-bottom:28px;max-width:700px}
+.hero h1 .line-accent{color:var(--green)}
+.hero-body{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:end;margin-top:40px}
+.hero-desc{font-size:17px;color:var(--mid);line-height:1.7;font-weight:300;max-width:420px}
+.hero-meta{display:flex;flex-direction:column;gap:10px;align-items:flex-end}
+.hero-meta-item{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--muted)}
+.hero-meta-item i{font-size:14px;color:var(--muted)}
+.hero-cta-wrap{margin-top:48px;display:flex;align-items:center;gap:20px}
+.hero-cta{display:inline-flex;align-items:center;gap:8px;background:var(--dark);color:#fff;padding:14px 28px;border-radius:100px;font-size:15px;font-weight:500;text-decoration:none;transition:transform .2s,box-shadow .2s}
+.hero-cta:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,0.18)}
+.hero-cta i{font-size:15px}
+.hero-cta-hint{font-size:13px;color:var(--muted)}
+@media(max-width:768px){.hero-body{grid-template-columns:1fr}.hero-meta{align-items:flex-start}}
+
+/* DIVIDER */
+.divider{max-width:1080px;margin:0 auto;padding:0 2rem;border-top:1px solid var(--border)}
+
+/* OVERVIEW */
+.overview{padding:64px 2rem;max-width:1080px;margin:0 auto}
+.overview-title{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:32px}
+.module-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1px;background:var(--border);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden}
+.module-item{background:var(--white);padding:24px 20px}
+.module-num{font-family:'Syne',sans-serif;font-size:11px;font-weight:700;color:var(--muted);letter-spacing:1px;margin-bottom:12px}
+.module-icon{font-size:20px;color:var(--dark);margin-bottom:10px}
+.module-name{font-family:'Syne',sans-serif;font-size:14px;font-weight:700;margin-bottom:6px}
+.module-desc{font-size:12px;color:var(--mid);line-height:1.5}
+
+/* SECTION */
+.section{padding:80px 2rem;max-width:1080px;margin:0 auto}
+.section-header{display:flex;align-items:baseline;gap:16px;margin-bottom:48px}
+.section-num{font-family:'Syne',sans-serif;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--green);min-width:72px}
+.section-title-wrap{}
+.section-title{font-family:'Syne',sans-serif;font-size:clamp(22px,3vw,32px);font-weight:800;line-height:1.2;letter-spacing:-0.5px;margin-bottom:10px}
+.section-desc{font-size:15px;color:var(--mid);line-height:1.7;font-weight:300;max-width:560px}
+
+/* SCREENSHOT */
+.ss{border-radius:var(--radius-lg);overflow:hidden;border:1px solid var(--border);background:var(--white)}
+.ss img{width:100%;display:block}
+.ss-ph{background:var(--border-light);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;padding:40px 20px;text-align:center}
+.ss-ph i{font-size:28px;color:var(--muted)}
+.ss-ph-title{font-size:13px;font-weight:500;color:var(--mid)}
+.ss-ph-file{font-size:11px;color:var(--muted);font-family:monospace;background:var(--border);padding:2px 8px;border-radius:4px;margin-top:2px}
+.ss-cap{padding:12px 16px;border-top:1px solid var(--border);font-size:13px;color:var(--mid);line-height:1.5}
+.ss-cap b{color:var(--dark);font-weight:500}
+
+/* LAYOUTS */
+.l-two{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.l-three{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px}
+.l-feature{display:grid;grid-template-columns:5fr 4fr;gap:56px;align-items:start}
+.l-feature.rev{grid-template-columns:4fr 5fr}
+@media(max-width:768px){.l-two,.l-three,.l-feature,.l-feature.rev{grid-template-columns:1fr}}
+
+/* MOBILE WRAP */
+.mobile-wrap{max-width:300px;margin:0 auto}
+.mobile-wrap .ss{border-radius:var(--radius-xl)}
+
+/* FEATURE TEXT */
+.feature-tag{display:inline-block;font-size:11px;font-weight:500;letter-spacing:1.5px;text-transform:uppercase;color:var(--green);margin-bottom:14px}
+.feature-h{font-family:'Syne',sans-serif;font-size:20px;font-weight:700;margin-bottom:12px;line-height:1.3}
+.feature-p{font-size:14px;color:var(--mid);line-height:1.7;margin-bottom:20px;font-weight:300}
+.feature-list{list-style:none;display:flex;flex-direction:column;gap:10px}
+.feature-list li{display:flex;align-items:flex-start;gap:10px;font-size:13px;color:var(--mid);line-height:1.5}
+.feature-list li i{font-size:14px;color:var(--green);margin-top:2px;flex-shrink:0}
+
+/* CALLOUT */
+.callout{border-left:3px solid var(--green);padding:16px 20px;background:var(--green-bg);border-radius:0 var(--radius) var(--radius) 0;margin-bottom:32px}
+.callout-title{font-size:13px;font-weight:600;color:var(--green);margin-bottom:6px}
+.callout p{font-size:13px;color:#166534;line-height:1.6}
+
+.callout-amber{border-left:3px solid #d97706;background:var(--amber-bg);border-radius:0 var(--radius) var(--radius) 0;padding:16px 20px;margin-bottom:32px}
+.callout-amber .callout-title{color:#b45309}
+.callout-amber p{font-size:13px;color:#92400e;line-height:1.6}
+
+/* SPEC ROW */
+.spec-row{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:28px}
+.spec-tag{display:flex;align-items:center;gap:6px;background:var(--white);border:1px solid var(--border);border-radius:100px;padding:6px 14px;font-size:12px;color:var(--mid)}
+.spec-tag i{font-size:13px;color:var(--green)}
+
+/* CTA SECTION */
+.cta-section{background:var(--dark);padding:88px 2rem;text-align:center}
+.cta-inner{max-width:560px;margin:0 auto}
+.cta-eyebrow{font-size:11px;font-weight:500;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.35);margin-bottom:20px}
+.cta-title{font-family:'Syne',sans-serif;font-size:clamp(28px,4vw,44px);font-weight:800;color:#fff;line-height:1.1;letter-spacing:-1px;margin-bottom:16px}
+.cta-desc{font-size:16px;color:rgba(255,255,255,0.5);font-weight:300;margin-bottom:40px;line-height:1.7}
+.cta-btn{display:inline-flex;align-items:center;gap:8px;background:#fff;color:var(--dark);padding:16px 36px;border-radius:100px;font-size:15px;font-weight:600;text-decoration:none;transition:transform .2s,opacity .2s}
+.cta-btn:hover{transform:translateY(-2px);opacity:0.92}
+.cta-btn i{font-size:15px}
+.cta-note{margin-top:16px;font-size:12px;color:rgba(255,255,255,0.25)}
+.cta-figures{display:flex;justify-content:center;gap:48px;margin-top:56px;padding-top:40px;border-top:1px solid rgba(255,255,255,0.08)}
+.cta-fig-num{font-family:'Syne',sans-serif;font-size:36px;font-weight:800;color:#fff;line-height:1}
+.cta-fig-lbl{font-size:11px;color:rgba(255,255,255,0.3);letter-spacing:1.5px;text-transform:uppercase;margin-top:6px}
+
+/* FOOTER */
+footer{background:var(--dark);border-top:1px solid rgba(255,255,255,0.06);padding:20px 2rem;text-align:center}
+footer p{font-size:11px;color:rgba(255,255,255,0.2);letter-spacing:0.3px}
+</style>
+</head>
+<body>
+
+<div class="progress" id="prog"></div>
+
+<nav>
+  <div class="nav-inner">
+    <div class="nav-brand">
+      <div class="nav-brand-dot"></div>
+      <span class="nav-brand-text">Raihan coffee System</span>
+    </div>
+    <div class="nav-right">
+      <span class="nav-label">Demo UAT · Tugas Akhir UDINUS 2025</span>
+      <a href="#form-cta" class="nav-cta">
+        Isi Kuesioner
+        <i class="ti ti-arrow-right"></i>
+      </a>
+    </div>
+  </div>
+</nav>
+
+<div class="side-nav" id="sideNav">
+  <button class="side-dot active" data-target="" title="Atas"></button>
+  <button class="side-dot" data-target="s1" title="Kesan Pertama"></button>
+  <button class="side-dot" data-target="s2" title="Kemudahan"></button>
+  <button class="side-dot" data-target="s3" title="Tampilan"></button>
+  <button class="side-dot" data-target="s4" title="Fitur"></button>
+  <button class="side-dot" data-target="s5" title="Analisis"></button>
+  <button class="side-dot" data-target="s6" title="Kecepatan"></button>
+  <button class="side-dot" data-target="s7" title="Sudut Pandang"></button>
+</div>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-eyebrow">
+    <div class="hero-eyebrow-line"></div>
+    <span class="hero-eyebrow-text">User Acceptance Testing</span>
+  </div>
+  <h1>
+    Sistem Manajemen<br>
+    <span class="line-accent">Raihan coffee</span>
+  </h1>
+  <div class="hero-body">
+    <div>
+      <p class="hero-desc">Sistem pemesanan berbasis QR Code terintegrasi dengan analisa penjualan menggunakan algoritma Apriori. Tinjau tampilan sistem berikut, lalu berikan penilaian melalui kuesioner yang tersedia.</p>
+      <div class="hero-cta-wrap">
+        <a href="#form-cta" class="hero-cta">
+          Isi Kuesioner
+          <i class="ti ti-arrow-down"></i>
+        </a>
+        <span class="hero-cta-hint">Scroll untuk melihat sistem terlebih dahulu</span>
+      </div>
+    </div>
+    <div class="hero-meta">
+      <div class="hero-meta-item">
+        <i class="ti ti-map-pin"></i>
+        Raihan coffee, Demak
+      </div>
+      <div class="hero-meta-item">
+        <i class="ti ti-school"></i>
+        S1 Teknik Informatika UDINUS
+      </div>
+      <div class="hero-meta-item">
+        <i class="ti ti-clock"></i>
+        Estimasi pengisian 5 menit
+      </div>
+      <div class="hero-meta-item">
+        <i class="ti ti-user"></i>
+        Anggara Maheswara — A11.2022.14594
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- OVERVIEW -->
+<div class="divider"></div>
+<div class="overview">
+  <div class="overview-title">Modul Sistem</div>
+  <div class="module-grid">
+    <div class="module-item">
+      <div class="module-num">01</div>
+      <i class="ti ti-qrcode module-icon"></i>
+      <div class="module-name">Pemesanan QR</div>
+      <p class="module-desc">Pelanggan scan QR meja, pilih menu, dan kirim pesanan tanpa aplikasi tambahan</p>
+    </div>
+    <div class="module-item">
+      <div class="module-num">02</div>
+      <i class="ti ti-receipt module-icon"></i>
+      <div class="module-name">Panel Kasir</div>
+      <p class="module-desc">Kasir proses antrian pesanan masuk secara real-time dari perangkat apapun</p>
+    </div>
+    <div class="module-item">
+      <div class="module-num">03</div>
+      <i class="ti ti-brain module-icon"></i>
+      <div class="module-name">Analisis Apriori</div>
+      <p class="module-desc">Sistem menemukan pola pembelian pelanggan untuk rekomendasi bundling yang tepat</p>
+    </div>
+    <div class="module-item">
+      <div class="module-num">04</div>
+      <i class="ti ti-chart-bar module-icon"></i>
+      <div class="module-name">Laporan Penjualan</div>
+      <p class="module-desc">Admin pantau performa revenue, menu terlaris, dan distribusi order secara visual</p>
+    </div>
+    <div class="module-item">
+      <div class="module-num">05</div>
+      <i class="ti ti-layout-grid module-icon"></i>
+      <div class="module-name">QR Generator</div>
+      <p class="module-desc">Buat, kelola, dan cetak QR Code untuk setiap meja kafe dari satu halaman</p>
+    </div>
+  </div>
+</div>
+
+<!-- S1: KESAN PERTAMA -->
+<div class="divider"></div>
+<div class="section" id="s1">
+  <div class="section-header">
+    <span class="section-num">Bagian I</span>
+    <div class="section-title-wrap">
+      <h2 class="section-title">Kesan Pertama</h2>
+      <p class="section-desc">Tampilan awal sistem — dari halaman login hingga dashboard utama yang menjadi pusat informasi admin.</p>
+    </div>
+  </div>
+  <div class="l-two">
+    <div class="ss">
+      <img src="ss_login.png" alt="Halaman Login" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+      <div class="ss-ph" style="display:none;aspect-ratio:3/4">
+        <i class="ti ti-lock"></i>
+        <div class="ss-ph-title">Halaman Login</div>
+        <div class="ss-ph-file">ss_login.png</div>
+      </div>
+      <div class="ss-cap"><b>Login</b> — Autentikasi admin dan kasir berbasis email dengan pembatasan akses per role</div>
+    </div>
+    <div class="ss">
+      <img src="ss_dashboard_admin.png" alt="Dashboard Admin" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+      <div class="ss-ph" style="display:none;aspect-ratio:16/9">
+        <i class="ti ti-layout-dashboard"></i>
+        <div class="ss-ph-title">Dashboard Admin</div>
+        <div class="ss-ph-file">ss_dashboard_admin.png</div>
+      </div>
+      <div class="ss-cap"><b>Dashboard Admin</b> — KPI harian, grafik tren revenue 30 hari, status order, association rules, dan frequent itemsets</div>
+    </div>
+  </div>
+</div>
+
+<!-- S2: KEMUDAHAN PENGGUNAAN -->
+<div class="divider"></div>
+<div class="section" id="s2">
+  <div class="section-header">
+    <span class="section-num">Bagian II</span>
+    <div class="section-title-wrap">
+      <h2 class="section-title">Kemudahan Penggunaan</h2>
+      <p class="section-desc">Seberapa mudah sistem ini digunakan oleh berbagai kalangan — dari pelanggan yang baru pertama scan QR hingga admin yang mengelola operasional.</p>
+    </div>
+  </div>
+
+  <div class="l-feature" style="margin-bottom:48px">
+    <div>
+      <span class="feature-tag">Sisi Pelanggan</span>
+      <h3 class="feature-h">Pesan langsung dari HP, tanpa instalasi apapun</h3>
+      <p class="feature-p">Pelanggan cukup scan QR Code di meja, lalu sistem membuka halaman pemesanan langsung di browser. Tidak ada login, tidak ada unduhan aplikasi — alurnya dirancang agar siapapun bisa menggunakannya tanpa bingung.</p>
+      <ul class="feature-list">
+        <li><i class="ti ti-check"></i>Filter menu per kategori — Minuman, Makanan, Snack</li>
+        <li><i class="ti ti-check"></i>Rekomendasi paket otomatis dari analisis pola pembelian</li>
+        <li><i class="ti ti-check"></i>Cart terupdate langsung saat item ditambah atau dikurangi</li>
+        <li><i class="ti ti-check"></i>Formulir pesanan simpel — nama wajib, email opsional</li>
+      </ul>
+    </div>
+    <div class="mobile-wrap">
+      <div class="ss">
+        <img src="ss_order_menu.png" alt="Halaman Order" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+        <div class="ss-ph" style="display:none;aspect-ratio:9/19">
+          <i class="ti ti-device-mobile"></i>
+          <div class="ss-ph-title">Halaman Order (Mobile)</div>
+          <div class="ss-ph-file">ss_order_menu.png</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="l-three">
+    <div class="ss">
+      <img src="ss_cartsheet.png" alt="CartSheet" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+      <div class="ss-ph" style="display:none;aspect-ratio:9/16">
+        <i class="ti ti-shopping-cart"></i>
+        <div class="ss-ph-title">CartSheet</div>
+        <div class="ss-ph-file">ss_cartsheet.png</div>
+      </div>
+      <div class="ss-cap"><b>CartSheet</b> — Panel ringkasan pesanan dengan kontrol jumlah item dan formulir identitas pelanggan</div>
+    </div>
+    <div class="ss">
+      <img src="ss_success_screen.png" alt="SuccessScreen" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+      <div class="ss-ph" style="display:none;aspect-ratio:9/16">
+        <i class="ti ti-check"></i>
+        <div class="ss-ph-title">SuccessScreen</div>
+        <div class="ss-ph-file">ss_success_screen.png</div>
+      </div>
+      <div class="ss-cap"><b>SuccessScreen</b> — Kode transaksi unik dengan barcode yang ditunjukkan ke kasir untuk konfirmasi</div>
+    </div>
+    <div class="ss">
+      <img src="ss_sidebar.png" alt="Sidebar" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+      <div class="ss-ph" style="display:none;aspect-ratio:16/9">
+        <i class="ti ti-layout-sidebar"></i>
+        <div class="ss-ph-title">Sidebar Navigasi</div>
+        <div class="ss-ph-file">ss_sidebar.png</div>
+      </div>
+      <div class="ss-cap"><b>Sidebar Navigasi</b> — Menu dikelompokkan dalam tiga seksi: Utama, Operasional, dan Analitik</div>
+    </div>
+  </div>
+</div>
+
+<!-- S3: KUALITAS TAMPILAN -->
+<div class="divider"></div>
+<div class="section" id="s3">
+  <div class="section-header">
+    <span class="section-num">Bagian III</span>
+    <div class="section-title-wrap">
+      <h2 class="section-title">Kualitas Tampilan & Antarmuka</h2>
+      <p class="section-desc">Konsistensi desain visual dari sisi warna, tipografi, tata letak, dan kenyamanan antarmuka yang dirasakan selama penggunaan.</p>
+    </div>
+  </div>
+  <div class="ss" style="margin-bottom:16px">
+    <img src="ss_dashboard_admin.png" alt="Dashboard Full" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+    <div class="ss-ph" style="display:none;aspect-ratio:21/9">
+      <i class="ti ti-device-desktop"></i>
+      <div class="ss-ph-title">Dashboard Admin — Tampilan Penuh</div>
+      <div class="ss-ph-file">ss_dashboard_admin.png</div>
+    </div>
+    <div class="ss-cap"><b>Tampilan Desktop</b> — Layout responsif dengan grid 12 kolom, grafik interaktif berbasis Recharts, dan hierarki informasi yang terstruktur</div>
+  </div>
+  <div class="l-two">
+    <div class="ss">
+      <img src="ss_manajemen_menu.png" alt="Manajemen Menu" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+      <div class="ss-ph" style="display:none;aspect-ratio:16/9">
+        <i class="ti ti-tools-kitchen-2"></i>
+        <div class="ss-ph-title">Manajemen Menu</div>
+        <div class="ss-ph-file">ss_manajemen_menu.png</div>
+      </div>
+      <div class="ss-cap"><b>Manajemen Menu</b> — Grid kartu menu dengan foto, badge kategori berwarna, dan status ketersediaan per item</div>
+    </div>
+    <div class="ss">
+      <img src="ss_qr_generator.png" alt="QR Generator" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+      <div class="ss-ph" style="display:none;aspect-ratio:16/9">
+        <i class="ti ti-qrcode"></i>
+        <div class="ss-ph-title">QR Generator</div>
+        <div class="ss-ph-file">ss_qr_generator.png</div>
+      </div>
+      <div class="ss-cap"><b>QR Generator</b> — Kartu QR per meja dikelompokkan berdasarkan tipe dengan panel filter dan legenda warna</div>
+    </div>
+  </div>
+</div>
+
+<!-- S4: KELENGKAPAN FITUR -->
+<div class="divider"></div>
+<div class="section" id="s4">
+  <div class="section-header">
+    <span class="section-num">Bagian IV</span>
+    <div class="section-title-wrap">
+      <h2 class="section-title">Kelengkapan & Kegunaan Fitur</h2>
+      <p class="section-desc">Setiap modul dirancang untuk kebutuhan operasional nyata — bukan sekadar fitur di atas kertas.</p>
+    </div>
+  </div>
+
+  <div class="l-feature rev" style="margin-bottom:48px">
+    <div class="mobile-wrap">
+      <div class="ss">
+        <img src="ss_kasir_mobile.png" alt="Dashboard Kasir" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+        <div class="ss-ph" style="display:none;aspect-ratio:9/19">
+          <i class="ti ti-receipt-2"></i>
+          <div class="ss-ph-title">Dashboard Kasir</div>
+          <div class="ss-ph-file">ss_kasir_mobile.png</div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <span class="feature-tag">Sisi Kasir</span>
+      <h3 class="feature-h">Proses semua pesanan dari satu layar</h3>
+      <p class="feature-p">Kasir melihat antrian masuk secara langsung, mencari order lewat kode atau scan barcode, lalu konfirmasi dan selesaikan pesanan tanpa berpindah halaman.</p>
+      <ul class="feature-list">
+        <li><i class="ti ti-check"></i>Antrian diperbarui otomatis tanpa refresh manual</li>
+        <li><i class="ti ti-check"></i>Pencarian order via input kode atau scan barcode kamera</li>
+        <li><i class="ti ti-check"></i>Status meja terpantau — browsing, memilih, atau memesan</li>
+        <li><i class="ti ti-check"></i>Metrik harian: completion rate, total order, pembatalan</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="l-three">
+    <div class="ss">
+      <img src="ss_tambah_menu.png" alt="Modal Tambah Menu" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+      <div class="ss-ph" style="display:none;aspect-ratio:3/4">
+        <i class="ti ti-plus"></i>
+        <div class="ss-ph-title">Modal Tambah Menu</div>
+        <div class="ss-ph-file">ss_tambah_menu.png</div>
+      </div>
+      <div class="ss-cap"><b>Tambah Menu</b> — Upload foto, nama, kategori, harga, deskripsi, dan toggle ketersediaan dalam satu formulir</div>
+    </div>
+    <div class="ss">
+      <img src="ss_qr_preview.png" alt="Preview Cetak QR" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+      <div class="ss-ph" style="display:none;aspect-ratio:3/4">
+        <i class="ti ti-printer"></i>
+        <div class="ss-ph-title">Preview Cetak QR</div>
+        <div class="ss-ph-file">ss_qr_preview.png</div>
+      </div>
+      <div class="ss-cap"><b>Preview Cetak</b> — Format cetak QR Code dengan identitas meja dan URL pemesanan siap print</div>
+    </div>
+    <div class="ss">
+      <img src="ss_laporan.png" alt="Laporan Penjualan" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+      <div class="ss-ph" style="display:none;aspect-ratio:16/9">
+        <i class="ti ti-chart-line"></i>
+        <div class="ss-ph-title">Laporan Penjualan</div>
+        <div class="ss-ph-file">ss_laporan.png</div>
+      </div>
+      <div class="ss-cap"><b>Laporan Penjualan</b> — Filter periode, grafik tren, menu terlaris, distribusi kategori, dan ekspor Excel atau PDF</div>
+    </div>
+  </div>
+</div>
+
+<!-- S5: ANALISIS APRIORI -->
+<div class="divider"></div>
+<div class="section" id="s5">
+  <div class="section-header">
+    <span class="section-num">Bagian V</span>
+    <div class="section-title-wrap">
+      <h2 class="section-title">Analisis & Kecerdasan Sistem</h2>
+      <p class="section-desc">Fitur inti sistem — Market Basket Analysis berbasis algoritma Apriori yang menemukan pola pembelian dari ribuan transaksi secara otomatis.</p>
+    </div>
+  </div>
+
+  <div class="callout">
+    <div class="callout-title">Tentang Algoritma Apriori</div>
+    <p>Apriori menganalisis riwayat transaksi untuk menemukan pasangan menu yang sering dibeli bersamaan. Hasilnya berupa aturan asosiasi — misalnya "56% pembeli Nasi Goreng Spesial juga membeli Es Kopi Susu". Rekomendasi ini digunakan untuk membuat bundling promosi yang berbasis data, bukan asumsi.</p>
+  </div>
+
+  <div class="ss" style="margin-bottom:16px">
+    <img src="ss_market_basket.png" alt="Market Basket Analysis" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+    <div class="ss-ph" style="display:none;aspect-ratio:16/7">
+      <i class="ti ti-analyze"></i>
+      <div class="ss-ph-title">Market Basket Analysis — Tampilan Penuh</div>
+      <div class="ss-ph-file">ss_market_basket.png</div>
+    </div>
+    <div class="ss-cap"><b>Market Basket Analysis</b> — Panel konfigurasi parameter, frequent itemset explorer, tabel association rules, rule strength scatter, business insights otomatis, dan association graph interaktif</div>
+  </div>
+
+  <div class="l-three">
+    <div class="ss">
+      <img src="ss_campaign_manager.png" alt="Campaign Manager" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+      <div class="ss-ph" style="display:none;aspect-ratio:16/9">
+        <i class="ti ti-speakerphone"></i>
+        <div class="ss-ph-title">Campaign Manager</div>
+        <div class="ss-ph-file">ss_campaign_manager.png</div>
+      </div>
+      <div class="ss-cap"><b>Campaign Manager</b> — Kartu bundle promo dengan status aktif, terjadwal, draft, dan kedaluwarsa</div>
+    </div>
+    <div class="ss">
+      <img src="ss_ai_bundles.png" alt="AI Bundles" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+      <div class="ss-ph" style="display:none;aspect-ratio:16/9">
+        <i class="ti ti-sparkles"></i>
+        <div class="ss-ph-title">AI Bundles</div>
+        <div class="ss-ph-file">ss_ai_bundles.png</div>
+      </div>
+      <div class="ss-cap"><b>AI Bundles</b> — Rules Apriori tersimpan siap dikonversi menjadi campaign promosi aktif dengan satu klik</div>
+    </div>
+    <div class="ss">
+      <img src="ss_convert_campaign.png" alt="Convert Campaign" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+      <div class="ss-ph" style="display:none;aspect-ratio:4/3">
+        <i class="ti ti-transfer"></i>
+        <div class="ss-ph-title">Convert ke Campaign</div>
+        <div class="ss-ph-file">ss_convert_campaign.png</div>
+      </div>
+      <div class="ss-cap"><b>Convert ke Campaign</b> — Formulir konversi rule Apriori menjadi promo dengan pilihan status awal</div>
+    </div>
+  </div>
+</div>
+
+<!-- S6: KECEPATAN -->
+<div class="divider"></div>
+<div class="section" id="s6">
+  <div class="section-header">
+    <span class="section-num">Bagian VI</span>
+    <div class="section-title-wrap">
+      <h2 class="section-title">Kecepatan & Keandalan Sistem</h2>
+      <p class="section-desc">Sistem dirancang untuk kondisi operasional kafe yang dinamis — data terkini selalu tersedia tanpa perlu tindakan manual dari pengguna.</p>
+    </div>
+  </div>
+
+  <div class="spec-row">
+    <div class="spec-tag"><i class="ti ti-refresh"></i>Polling kasir setiap 5 detik</div>
+    <div class="spec-tag"><i class="ti ti-bolt"></i>Navigasi tanpa full page reload</div>
+    <div class="spec-tag"><i class="ti ti-database"></i>Cache analitik adaptif</div>
+    <div class="spec-tag"><i class="ti ti-antenna-bars-5"></i>Status meja real-time</div>
+    <div class="spec-tag"><i class="ti ti-device-mobile"></i>Responsif di semua perangkat</div>
+  </div>
+
+  <div class="l-two">
+    <div class="ss">
+      <img src="ss_panel_kasir_admin.png" alt="Panel Kasir Admin" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+      <div class="ss-ph" style="display:none;aspect-ratio:16/9">
+        <i class="ti ti-dashboard"></i>
+        <div class="ss-ph-title">Panel Kasir Admin</div>
+        <div class="ss-ph-file">ss_panel_kasir_admin.png</div>
+      </div>
+      <div class="ss-cap"><b>Panel Kasir Admin</b> — Live monitor meja, notifikasi order baru otomatis, dan statistik operasional hari ini</div>
+    </div>
+    <div class="ss">
+      <img src="ss_kasir_confirmed.png" alt="Order Dikonfirmasi" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+      <div class="ss-ph" style="display:none;aspect-ratio:9/16">
+        <i class="ti ti-circle-check"></i>
+        <div class="ss-ph-title">Setelah Konfirmasi</div>
+        <div class="ss-ph-file">ss_kasir_confirmed.png</div>
+      </div>
+      <div class="ss-cap"><b>Setelah Konfirmasi</b> — Status order berubah dan masuk ke antrian aktif secara langsung tanpa reload halaman</div>
+    </div>
+  </div>
+</div>
+
+<!-- S7: SUDUT PANDANG -->
+<div class="divider"></div>
+<div class="section" id="s7">
+  <div class="section-header">
+    <span class="section-num">Bagian VII</span>
+    <div class="section-title-wrap">
+      <h2 class="section-title">Sudut Pandang</h2>
+      <p class="section-desc">Nilai sistem ini dari perspektif Anda sendiri — sebagai calon pengguna, pengamat, atau pelaku bisnis kuliner.</p>
+    </div>
+  </div>
+
+  <div class="callout-amber">
+    <div class="callout-title">Konteks untuk penilaian Anda</div>
+    <p>Kebanyakan kafe masih mengandalkan pencatatan manual dan intuisi untuk menentukan promosi. Sistem ini menghadirkan pengelolaan berbasis data yang dapat dioperasikan langsung oleh pemilik atau kasir — tanpa perlu latar belakang teknis.</p>
+  </div>
+
+  <div class="l-feature">
+    <div>
+      <h3 class="feature-h">Dari data transaksi ke keputusan promosi</h3>
+      <p class="feature-p">Alur kerja lengkap: pelanggan pesan via QR, kasir proses, data tersimpan, Apriori analisis, rekomendasi muncul, admin konversi ke promo aktif. Semua dalam satu sistem.</p>
+      <ul class="feature-list">
+        <li><i class="ti ti-check"></i>Tidak memerlukan pelatihan teknis untuk dioperasikan</li>
+        <li><i class="ti ti-check"></i>Rekomendasi berbasis data nyata, bukan asumsi</li>
+        <li><i class="ti ti-check"></i>Laporan ekspor langsung ke Excel atau PDF</li>
+        <li><i class="ti ti-check"></i>Dapat diakses dari laptop, tablet, maupun HP</li>
+      </ul>
+    </div>
+    <div class="ss">
+      <img src="ss_laporan.png" alt="Laporan Lengkap" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+      <div class="ss-ph" style="display:none;aspect-ratio:4/3">
+        <i class="ti ti-report-analytics"></i>
+        <div class="ss-ph-title">Laporan Penjualan</div>
+        <div class="ss-ph-file">ss_laporan.png</div>
+      </div>
+      <div class="ss-cap"><b>Laporan Penjualan</b> — Data penjualan tersedia kapanpun dengan opsi ekspor untuk kebutuhan pelaporan eksternal</div>
+    </div>
+  </div>
+</div>
+
+<!-- CTA -->
+<div class="cta-section" id="form-cta">
+  <div class="cta-inner">
+    <p class="cta-eyebrow">Anda sudah melihat seluruh sistem</p>
+    <h2 class="cta-title">Berikan penilaian Anda</h2>
+    <p class="cta-desc">Kuesioner ini memuat 29 pernyataan dalam 8 bagian dan dapat diselesaikan dalam sekitar 5 menit. Tidak ada jawaban benar atau salah.</p>
+    <a href="https://docs.google.com/forms/d/e/1FAIpQLSfab4Bt7KrrP4XzVaFoTBLthbcTCPt3ktD2JE6aB8UzcPBtPg/viewform?usp=header" class="cta-btn" target="_blank">
+      Isi Kuesioner UAT
+      <i class="ti ti-arrow-right"></i>
+    </a>
+    <p class="cta-note">Data Anda bersifat rahasia dan hanya digunakan untuk keperluan penelitian</p>
+    
+    </div>
+  </div>
+</div>
+
+<footer>
+  <p>Kuesioner UAT — Sistem Manajemen Pemesanan Raihan coffee &nbsp;·&nbsp; Anggara Maheswara Eka Prawira Setyono &nbsp;·&nbsp; A11.2022.14594 &nbsp;·&nbsp; UDINUS Semarang 2025</p>
+</footer>
+
+<script>
+window.addEventListener('scroll',function(){
+  var el=document.documentElement;
+  var pct=(el.scrollTop)/((el.scrollHeight)-el.clientHeight)*100;
+  document.getElementById('prog').style.width=pct+'%';
+  var ids=['s1','s2','s3','s4','s5','s6','s7'];
+  var dots=document.querySelectorAll('.side-dot');
+  var cur=0;
+  ids.forEach(function(id,i){
+    var s=document.getElementById(id);
+    if(s&&s.getBoundingClientRect().top<180)cur=i+1;
+  });
+  dots.forEach(function(d,i){d.classList.toggle('active',i===cur)});
+});
+document.querySelectorAll('.side-dot').forEach(function(d){
+  d.addEventListener('click',function(){
+    var t=this.getAttribute('data-target');
+    if(!t){window.scrollTo({top:0,behavior:'smooth'});return}
+    var el=document.getElementById(t);
+    if(el)el.scrollIntoView({behavior:'smooth'});
+  });
+});
+</script>
+</body>
+</html>
